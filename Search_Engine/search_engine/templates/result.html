@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>ログイン画面</title>
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<title>PMT login</title>
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <style>
+	/* ----------------- CSS Reset -------------------*/
+        html, body,
+        ul, ol, li,
+        h1, h2, h3, h4, h5, h6, p, div {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        a {
+            text-decoration: none;
+        }
+        #search-engine{
+            margin: 24px 16px;
+            clear:both;
+        }
+        #search-engine h1{
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .url-wrapper{
+            margin: 24px 16px;
+        }
+	</style>
+</head>
+<body>
+  <div class="container">
+    <div id="search-engine">
+      <h1><a href="search.html">Top</a></h1>
+      <form action="">
+        <div class="row">
+          <div class="col-xs-8">
+            <input type="text" class="form-control">
+          </div>
+          <div class="col-xs-4">
+            <input type="submit" value="Search" class="form-control btn-primary">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="result-wrapper">
+      <div class="url-wrapper">
+        <h4><a href="">Title 1</a></h4>
+        <p><small>url 1</small></p>
+        <p><small>description 1</small></p>
+      </div>
+      <div class="url-wrapper">
+        <h4><a href="">Title 2</a></h4>
+        <p><small>url 2</small></p>
+        <p><small>description 2</small></p>
+      </div>
+      <div class="url-wrapper">
+        <h4><a href="">Title 3</a></h4>
+        <p><small>url 3</small></p>
+        <p><small>description 3</small></p>
+      </div>
+    </div>
+  </div>
+</body>
