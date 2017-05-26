@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from practice import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^practice_list/$', views.practice_list, name='practice_list'),
+    url(r'^practice_add/$', views.practice_add, name='practice_add'),
+    url(r'^practice_edit/(\d+)/', views.practice_edit, name='practice_edit'),
+    url(r'^practice_delete/(\d)/', views.practice_delete, name='practice_delete'),
 ]

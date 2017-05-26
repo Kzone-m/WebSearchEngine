@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        #info-wrapper{
+            width: 60%;
+            margin: 48px auto;
+        }
+    </style>
+</head>
+<body>
+
+<h2 class="text-right">
+    <a href="{% url 'practice_add' %}">選手を追加する</a>
+</h2>
+
+
+<div id="info-wrapper">
+    {% for player in players %}
+        <ul class="list-group text-center">
+            <li class="list-group-item">TEAM: {{ player.team }}</li>
+            <li class="list-group-item">PLAYER: {{ player.name }}</li>
+            <li class="list-group-item">PAY: {{ player.yearly_pay }}</li>
+            <li class="list-group-item">POSITION: {{ player.position }}</li>
+            <li class="list-group-item"><a href="{% url 'practice_edit' player.id %}">編集する</a></li>
+            <li class="list-group-item"><a href="{% url 'practice_delete' player.id %}">退団させる</a></li>
+        </ul>
+    {% endfor %}
+</div>
+
+
+
+</body>
+</html>

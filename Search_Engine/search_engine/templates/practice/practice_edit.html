@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Practice</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        #form-wrapper{
+           width: 40%;
+           margin: 100px auto;
+        }
+    </style>
+</head>
+<body>
+
+<h2 class="text-right">
+    <a href="{% url 'practice_list' %}">選手リストへ</a>
+</h2>
+
+<div id="form-wrapper">
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="送信" class="form-control">
+    </form>
+</div>
+</body>
+</html>
