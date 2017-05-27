@@ -64,7 +64,7 @@ def practice_edit(request, id):
 def practice_delete(request, id):
     try:
         player = BaseballPlayer.objects.get(id=id)
-    except BaseballPlayer.DoesNotExists:
+    except BaseballPlayer.DoesNotExist:
         raise Http404
 
     player.delete()
