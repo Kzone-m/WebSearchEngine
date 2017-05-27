@@ -14,6 +14,10 @@
             width: 60%;
             margin: 48px auto;
         }
+        #paginator-wrapper{
+            width: 60%;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +40,21 @@
     {% endfor %}
 </div>
 
+<div id="paginator-wrapper">
+    {% if players.has_previous %}
+        <a href="?page={{ players.previous_page_number }}">&lt; 前のページ</a>
+    {% else %}
+        <span>&lt; 前のページ</span>
+    {% endif %}
+
+    {{ players.number }}ページ
+
+    {% if  players.has_next %}
+        <a href="?page={{ players.next_page_number }}">次のページ &gt;</a>
+    {% else %}
+        <span>次のページ &gt;</span>
+    {% endif %}
+</div>
 
 
 </body>

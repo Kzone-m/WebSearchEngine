@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseRedirect, Http404
 from .forms import BaseballPlayerAddForm
 from .models import BaseballPlayer
@@ -7,8 +8,15 @@ from .models import BaseballPlayer
 
 def practice_list(request):
     players = BaseballPlayer.objects.all()
+    paginator = Paginator(players, 2)
+    page = request.GET.get('page', 1)
+    try:
+        players = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        players = paginator.page(1)
+
     d = {
-        'players': players
+        'players': players,
     }
     return render(request, 'practice/practice_list.html', d)
 
