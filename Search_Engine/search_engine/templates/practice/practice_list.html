@@ -26,6 +26,13 @@
     <a href="{% url 'practice_add' %}">選手を追加する</a>
 </h2>
 
+<div class="container">
+    <h2 class="text-center">選手を探す</h2>
+    <form action="" method="get">
+        {{ form.as_p }}
+        <input type="submit" class="form-control" value="Search">
+    </form>
+</div>
 
 <div id="info-wrapper">
     {% for player in players %}
@@ -40,9 +47,11 @@
     {% endfor %}
 </div>
 
+
 <div id="paginator-wrapper">
+<!-- Pagination機能 -->
     {% if players.has_previous %}
-        <a href="?page={{ players.previous_page_number }}">&lt; 前のページ</a>
+        <a href="?page={{ players.previous_page_number }}&{{ search_params }}">&lt; 前のページ</a>
     {% else %}
         <span>&lt; 前のページ</span>
     {% endif %}
@@ -50,7 +59,7 @@
     {{ players.number }}ページ
 
     {% if  players.has_next %}
-        <a href="?page={{ players.next_page_number }}">次のページ &gt;</a>
+        <a href="?page={{ players.next_page_number }}&{{ search_params }}">次のページ &gt;</a>
     {% else %}
         <span>次のページ &gt;</span>
     {% endif %}

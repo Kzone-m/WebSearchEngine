@@ -19,14 +19,18 @@ class TestPracticeList(TestCase):
         BaseballPlayer.objects.create(name='TEST2', yearly_pay=1000, position='Center', team='A')
         BaseballPlayer.objects.create(name='TEST3', yearly_pay=1000, position='Center', team='A')
         BaseballPlayer.objects.create(name='TEST4', yearly_pay=1000, position='Center', team='A')
+        BaseballPlayer.objects.create(name='TEST5', yearly_pay=1000, position='Center', team='A')
+        BaseballPlayer.objects.create(name='TEST6', yearly_pay=1000, position='Center', team='A')
 
         res = self.client.get(reverse('practice_list'), data={'page': 1})
         self.assertContains(res, 'TEST1')
         self.assertContains(res, 'TEST2')
-
-        res = self.client.get(reverse('practice_list'), data={'page': 2})
         self.assertContains(res, 'TEST3')
         self.assertContains(res, 'TEST4')
+        self.assertContains(res, 'TEST5')
+
+        res = self.client.get(reverse('practice_list'), data={'page': 2})
+        self.assertContains(res, 'TEST6')
 
     def test_get_invalid_page(self):
         BaseballPlayer.objects.create(name='TEST', yearly_pay=1000, position='Center', team='A')
