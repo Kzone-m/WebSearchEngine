@@ -76,7 +76,7 @@ def split_html_tags_into_words(html, tag_name, words_lst):
             words_lst += tag_content.text.split()
 
 
-def add_page_to_index(index, url, html):
+def add_page_to_index(index, url, html, target_html_tag):
     """get keywords' list and pass it to add_to_index function
     
     :type index: dict
@@ -87,8 +87,7 @@ def add_page_to_index(index, url, html):
     :param html: containing its html dom info
     """
     words_lst = []
-    target_tag_lst = ['h1', 'p', 'a']
-    for tag_name in target_tag_lst:
+    for tag_name in target_html_tag:
         split_html_tags_into_words(html, tag_name, words_lst)
     for word in words_lst:
         word = re.sub(r'[\s\[\]\{\}\<\>\-\/\'\"*+=!#%:;.,。、]', '', word)
@@ -101,7 +100,6 @@ def add_page_to_index(index, url, html):
             node = tagger.parseToNode(word)
             while node:
                 word_ja = node.surface
-                print(word_ja)
                 if len(word_ja) != 0:
                     add_to_index(index, word_ja, url)
                 node = node.next
@@ -144,19 +142,23 @@ def union_urls(base_url, urls, new_urls):
             urls.append(new_url)
 
 
-def scraping(seed_url, max_depth, max_capacity):
+def scraping(seed_url, max_depth, max_capacity, target_html_tag):
     """parsing seed url, collecting urls related to seed url, and saving collected urls into DB
     
     :type seed_url: str
     :param seed_url: first url starting scraping
     :type max_depth: int
-    :param max_depth: controlling how many pages this agent crawls
-    :rtype pymongo.collection.Collection
-    :return: Collection
+    :param max_depth: controlling the depth of crawls
+    :type max_capacity: int
+    :param max_capacity: controlling how many url collects per page
+    :type target_html_tag: list
+    :param target_html_tag: list containing target html tags 
+    :rtype tuple(dict, dict)
+    :return: tuple(dict, dict)
     """
     crawl_lst = [seed_url]    # list of targets scraping
     crawled_lst = []    # container for saving crawled urls
-    next_depth = []    # temporaly container which will contain list of next targets at each depth, and it will be initialized when scraping moves to next depth
+    next_depth = []    # temporary container which will contain list of next targets at each depth, and it will be initialized when scraping moves to next depth
     depth = 0    # showing the depth when scraping
     index = {}    # {keyword, [url1, url2], keyword, [url1, url2], ...}
     graph = {}    # {<url>, [list of pages it links to]}
@@ -169,7 +171,7 @@ def scraping(seed_url, max_depth, max_capacity):
                 continue
             if base_url not in crawled_lst:
                 outlinks = html.cssselect('a')   # select all a-tags projected to another html
-                add_page_to_index(index, base_url, html)
+                add_page_to_index(index, base_url, html, target_html_tag)
                 graph[base_url] = [urljoin(base_url, outlink.get('href')) for outlink in outlinks]
                 union_urls(base_url, next_depth, outlinks)
                 crawled_lst.append(base_url)
@@ -239,7 +241,8 @@ def sort_ranks_by_descending(ranks, index, keyword):
         return None
 
 
-
+'''
 index, graph = scraping(input('enter seed url: '), int(input('enter depth: ')), int(input('decide capacity: ')))
 ranks = compute_ranks(graph)
 sorted_ranks = sort_ranks_by_descending(ranks, index, keyword = input('enter what you wanna search: '))
+'''

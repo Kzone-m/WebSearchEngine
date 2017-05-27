@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>ログイン画面</title>
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<title>PMT login</title>
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <style>
+	/* ----------------- CSS Reset -------------------*/
+        html, body,
+        ul, ol, li,
+        h1, h2, h3, h4, h5, h6, p, div {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        a {
+            text-decoration: none;
+        }
+
+    /* ----------------- Scraping Style -------------------*/
+        #search-engine{
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        #title {
+            margin-top: 24px;
+        }
+
+        #form-wrapper{
+            width: 80%;
+            margin: 16px auto;
+        }
+
+        #form-wrapper input{
+            margin-bottom: 8px;
+        }
+
+        #submit{
+            width: 40%;
+            margin: 0 auto;
+        }
+
+        #button-wrapper{
+            text-align: center;
+            margin: 0 auto;
+        }
+	</style>
+</head>
+<body>
+
+<div id="scraping-wrapper">
+    <div id="title">
+        <h1 class="text-center">スクレイピング道場</h1>
+    </div>
+    <div id="form-wrapper">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div id="scraping-form">
+                {{ form.as_p }}
+            </div>
+            <input type="submit" value="Scrape" class="form-control" id="submit">
+        </form>
+    </div>
+
+    <div id="button-wrapper">
+        <p class="btn btn-danger">Add HTML Tag</p>
+    </div>
+</div>
+
+
+<script>
+    $(function(){
+        var new_input = '<p><input type="text" name="target_html_tag" placeholder="Enter Target HTML Tag: e.x. h1" class="form-control" id="id_target_html_tag" required></p>'
+        $('.btn').on('click', function(){
+            console.log(new_input);
+            $('#scraping-form').append(new_input);
+        });
+    })
+</script>
+</body>
+</html>
+
+
