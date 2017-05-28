@@ -155,7 +155,12 @@ def scraping(seed_url, max_depth, max_capacity, target_html_tag):
     :param target_html_tag: list containing target html tags 
     :rtype tuple(dict, dict)
     :return: tuple(dict, dict)
+    
+    <body>
+    <h1></h1>
+    <a href="sample.com">
     """
+    count = 0
     crawl_lst = [seed_url]    # list of targets scraping
     crawled_lst = []    # container for saving crawled urls
     next_depth = []    # temporary container which will contain list of next targets at each depth, and it will be initialized when scraping moves to next depth
@@ -180,6 +185,9 @@ def scraping(seed_url, max_depth, max_capacity, target_html_tag):
                 depth = depth + 1
         else:
             continue
+
+        count += 1
+        print(count)
     return index, graph
 
 
