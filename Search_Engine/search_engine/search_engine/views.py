@@ -16,10 +16,6 @@ def scrape(request):
         max_capacity = int(request.POST.get('max_capacity'))
         target_html_tag = request.POST.getlist('target_html_tag')
         index, graph = scraping(seed_url, max_depth, max_capacity, target_html_tag)
-        d = {
-            'index': index,
-            'graph': graph,
-        }
         for key in index:
             if Index.objects.filter(index = key).exists():
                 target_index = Index.objects.get(index = key)
@@ -39,13 +35,19 @@ def scrape(request):
             max_capacity = form.cleaned_data['max_capacity']
             target_html_tag = form.cleaned_data['target_html_tag']
         '''
-        return HttpResponseRedirect(reverse('scrape_result'))
+        # return HttpResponseRedirect(reverse('scrape_result'))
+        d = {
+            'index': index,
+            'graph': graph,
+        }
+        return render(request, 'scrape_result.html', d)
 
     form = ScrapingForm()
     d = {
         'form': form,
     }
     return render(request, 'scrape.html', d)
+
 
 
 def scrape_result(request):

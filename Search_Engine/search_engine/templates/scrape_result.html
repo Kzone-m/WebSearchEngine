@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>ログイン画面</title>
+	<title>スクレイプ結果</title>
   	<meta http-equiv="X-UA-Compatible" content="IE=edge">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<title>PMT login</title>
@@ -44,7 +44,7 @@
         <h4 class="text-left">{{ key }}</h4>
         <ul class="value-wrapper">
             {% for url in urls %}
-                <li>{{ url.url }}</li>
+                <li>{{ url }}</li>
             {% endfor %}
         </ul>
     </div>

@@ -18,7 +18,7 @@ def confirm_robots_txt(target_url, max_capacity):
     return robots.allowed(target_url, 'python program')
 
 
-def prepare_parsing_url(url):
+def parsing_url(url):
     """access this url, decode its info as html contents, and pass them to parse_url function
     
     :type url: str
@@ -28,35 +28,10 @@ def prepare_parsing_url(url):
     """
     file_name = 'scraping_sample.html'
     try:
-        f = urlopen(url)
-        encoding = f.info().get_content_charset(failobj='utf-8')
-        text = f.read().decode(encoding)
-        if not os.path.exists(file_name):
-            with open(file_name, 'w') as f:
-                f.write(text)
-        if os.path.exists(file_name):
-            html = parse_url(file_name)
-            os.remove(file_name)
-        else:
-            html = None
-    except (UnicodeDecodeError, urllib.error.HTTPError):
-        html = None
-    return html
-
-
-def parse_url(url):
-    """parse url as html
-    
-    :type url: str
-    :param url: target url parsed by lxml
-    :rtype: lxml.html.HtmlElement or NoneType
-    :return: HtmlElement containing url's html info
-    """
-    try:
+        f = urlopen(url).read()
+        html = lxml.html.fromstring(f)
         time.sleep(2)
-        tree = lxml.html.parse(url)
-        html = tree.getroot()
-    except OSError:
+    except (UnicodeDecodeError, urllib.error.HTTPError):
         html = None
     return html
 
@@ -95,6 +70,7 @@ def add_page_to_index(index, url, html, target_html_tag):
         if len(word) == 0:
             continue
         if re.search(pattern, word):
+            add_to_index(index, word, url)
             tagger = MeCab.Tagger()
             tagger.parse('')
             node = tagger.parseToNode(word)
@@ -170,9 +146,11 @@ def scraping(seed_url, max_depth, max_capacity, target_html_tag):
     html = None    # html's dom info
     while crawl_lst and depth <= max_depth:
         base_url = crawl_lst.pop()
+        count += 1
+        print(count, ': ', base_url)
         if confirm_robots_txt(base_url, max_capacity):
-            html = prepare_parsing_url(base_url)
-            if not html:    # if html is NontType
+            html = parsing_url(base_url)
+            if isinstance(None, type(html)):    # if html is NontType
                 continue
             if base_url not in crawled_lst:
                 outlinks = html.cssselect('a')   # select all a-tags projected to another html
@@ -185,9 +163,6 @@ def scraping(seed_url, max_depth, max_capacity, target_html_tag):
                 depth = depth + 1
         else:
             continue
-
-        count += 1
-        print(count)
     return index, graph
 
 
