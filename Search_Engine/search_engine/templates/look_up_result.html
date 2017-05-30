@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>検索結果</title>
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <style>
+	/* ----------------- CSS Reset -------------------*/
+        html, body,
+        ul, ol, li,
+        h1, h2, h3, h4, h5, h6, p, div {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        a {
+            text-decoration: none;
+        }
+        #search-engine{
+            margin: 24px 16px;
+            clear:both;
+        }
+        #search-engine h1{
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .url-wrapper{
+            margin: 24px 16px;
+        }
+	</style>
+</head>
+<body>
+  <div class="container">
+    <div id="search-engine">
+      <h1><a href="{% url 'look_up' %}">Top</a></h1>
+		<form action="{% url 'look_up_result' %}" method="post">
+			{% csrf_token %}
+			<div class="row">
+				<div class="col-sm-9">
+					{{ form }}
+				</div>
+				<div class="col-sm-3">
+					<input type="submit" value="Search" class="form-control">
+				</div>
+			</div>
+		</form>
+    </div>
+
+    <div id="result-wrapper">
+      {% for index in indexes %}
+        {% for url in index.url_set.all %}
+          <div class="url-wrapper">
+            <h4><a href="{{ url.url }}">{{ index.index }}</a></h4>
+            <p><small>{{ url.url }}</small></p>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id="indexes">
+
+  </div>
+
+  <div id="display"> </div>
+
+
+  <script>
+      $(function(){
+        var endpoint = '/api/ajax/data/';
+        $.ajax({
+            method: "GET",
+            url: endpoint,
+            success: function(data){
+                $.each(data, function(i, d){
+                  $('#display').append('<p>' + d.sales + ' : ' + d.customers + '</p>')
+                });
+            },
+            error: function(data){
+                console.log('Error');
+                console.log(data);
+            }
+        })
+      })
+  </script>
+
+</body>
+</html>

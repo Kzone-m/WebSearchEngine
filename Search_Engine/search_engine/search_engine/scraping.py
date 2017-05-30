@@ -1,4 +1,4 @@
-import os, lxml.html, cssselect, re, time, urllib, MeCab
+import lxml.html, cssselect, re, time, urllib, MeCab
 from urllib.parse import urljoin
 from urllib.request import urlopen
 from reppy.cache import RobotsCache
@@ -148,12 +148,16 @@ def scraping(seed_url, max_depth, max_capacity, target_html_tag):
         base_url = crawl_lst.pop()
         count += 1
         print(count, ': ', base_url)
+        # confirming target url is scrapable.
         if confirm_robots_txt(base_url, max_capacity):
+            # parse target url as HTML object, but it sometimes can be None object
             html = parsing_url(base_url)
-            if isinstance(None, type(html)):    # if html is NontType
+            if isinstance(None, type(html)):
                 continue
+            # firstly, confirm whether target url is already crawled
             if base_url not in crawled_lst:
-                outlinks = html.cssselect('a')   # select all a-tags projected to another html
+                # select all a-tags projected to another html
+                outlinks = html.cssselect('a')
                 add_page_to_index(index, base_url, html, target_html_tag)
                 graph[base_url] = [urljoin(base_url, outlink.get('href')) for outlink in outlinks]
                 union_urls(base_url, next_depth, outlinks)
