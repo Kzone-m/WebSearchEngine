@@ -19,10 +19,25 @@ class AjaxData(APIView):
     def get(self, request, format=None):
         # usernames = [user.username for user in User.objects.all()]
         # return Response(usernames)
+        # http://127.0.0.1:8000/api/ajax/data/?param1=a
+        keyword = ""
+        parameter = request.query_params    # <QueryDict: {'param1': ['a']}>
+        for index in parameter:
+            keyword = parameter[index]
+
+        print(keyword)
         data = [
             {'sales':100, 'customers': 10},
             {'sales':200, 'customers': 20},
         ]
+        indexes = Index.objects.filter(index__contains=keyword)
+        for index in indexes:
+            temp_dict = dict()
+            temp_dict[index.index] = {}
+            urls = index.url_set.all()
+            for url in urls:
+                temp_dict[index.index][url.url] = url.title
+            data.append(temp_dict)
 
         return Response(data)
 
@@ -54,9 +69,9 @@ def scrape(request):
             else:
                 target_index = Index.objects.create(index = key)
 
-            for url in index[key]:
-                if not Url.objects.filter(url=url, index=target_index).exists():
-                    Url.objects.create(url=url, index=target_index)
+            for url, title in index[key].items():
+                if not Url.objects.filter(index=target_index, url=url, title=title).exists():
+                    Url.objects.create(index=target_index, url=url, title=title)
 
         '''
         後でcleaned_dataをformクラスで再定義する
@@ -110,8 +125,15 @@ def look_up_result(request):
         if form.is_valid():
             query = form.cleaned_data.get('query')
             indexes = Index.objects.filter(index__contains=query)
+            print("indexes:", indexes)
+            for index in indexes:
+                for url in index.url_set.all():
+                    print(url.url)
             d = {
                 'indexes': indexes,
                 'form': LookUpForm(),
             }
+    d = {
+        'form': LookUpForm(),
+    }
     return render(request, 'look_up_result.html', d)

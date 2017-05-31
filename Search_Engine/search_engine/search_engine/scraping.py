@@ -26,7 +26,6 @@ def parsing_url(url):
     :rtype: lxml.html.HtmlElement or NoneType
     :return: HtmlElement containing url's html info
     """
-    file_name = 'scraping_sample.html'
     try:
         f = urlopen(url).read()
         html = lxml.html.fromstring(f)
@@ -51,7 +50,7 @@ def split_html_tags_into_words(html, tag_name, words_lst):
             words_lst += tag_content.text.split()
 
 
-def add_page_to_index(index, url, html, target_html_tag):
+def add_page_to_index(index, url, html, target_html_tag, title):
     """get keywords' list and pass it to add_to_index function
     
     :type index: dict
@@ -70,20 +69,20 @@ def add_page_to_index(index, url, html, target_html_tag):
         if len(word) == 0:
             continue
         if re.search(pattern, word):
-            add_to_index(index, word, url)
+            add_to_index(index, word, url, title)
             tagger = MeCab.Tagger()
             tagger.parse('')
             node = tagger.parseToNode(word)
             while node:
                 word_ja = node.surface
                 if len(word_ja) != 0:
-                    add_to_index(index, word_ja, url)
+                    add_to_index(index, word_ja, url, title)
                 node = node.next
         else:
-            add_to_index(index, word, url)
+            add_to_index(index, word, url, title)
 
 
-def add_to_index(index, keyword, url):
+def add_to_index(index, keyword, url, title):
     """add keyword and corresponding url to index dict
     
     :type index: dict
@@ -94,10 +93,12 @@ def add_to_index(index, keyword, url):
     :param url: crawling url
     """
     if keyword in index:
-        if url not in index[keyword]:
-            index[keyword].append(url)
+        # u => url, t => title
+        # if url not in index[keyword][url]:
+        if url != index[keyword].get(url):
+            index[keyword][url] = title
     else:
-        index[keyword] = [url]
+        index[keyword] = {url: title}
 
 
 def union_urls(base_url, urls, new_urls):
@@ -132,17 +133,14 @@ def scraping(seed_url, max_depth, max_capacity, target_html_tag):
     :rtype tuple(dict, dict)
     :return: tuple(dict, dict)
     
-    <body>
-    <h1></h1>
-    <a href="sample.com">
     """
     count = 0
     crawl_lst = [seed_url]    # list of targets scraping
     crawled_lst = []    # container for saving crawled urls
-    next_depth = []    # temporary container which will contain list of next targets at each depth, and it will be initialized when scraping moves to next depth
+    next_depth = []    # temporary container containing list of next targets at each depth, and it will be initialized when scraping moves to next depth
     depth = 0    # showing the depth when scraping
-    index = {}    # {keyword, [url1, url2], keyword, [url1, url2], ...}
-    graph = {}    # {<url>, [list of pages it links to]}
+    index = {}    # {keyword1, [url1, url2], keyword2, [url1, url2], ...}
+    graph = {}    # {<url>, [list of url projected to another pages]}
     html = None    # html's dom info
     while crawl_lst and depth <= max_depth:
         base_url = crawl_lst.pop()
@@ -158,7 +156,9 @@ def scraping(seed_url, max_depth, max_capacity, target_html_tag):
             if base_url not in crawled_lst:
                 # select all a-tags projected to another html
                 outlinks = html.cssselect('a')
-                add_page_to_index(index, base_url, html, target_html_tag)
+                # the title of the base url
+                title = html.cssselect('title')[0].text
+                add_page_to_index(index, base_url, html, target_html_tag, title)
                 graph[base_url] = [urljoin(base_url, outlink.get('href')) for outlink in outlinks]
                 union_urls(base_url, next_depth, outlinks)
                 crawled_lst.append(base_url)

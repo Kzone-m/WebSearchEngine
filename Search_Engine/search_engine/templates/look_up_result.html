@@ -31,6 +31,12 @@
             text-align: center;
             margin-bottom: 8px;
         }
+        #render-with-search-wrapper{
+            display: none;
+            border: 1px solid black;
+            background-color: white;
+            z-index: 10;
+        }
         .url-wrapper{
             margin: 24px 16px;
         }
@@ -50,6 +56,13 @@
 					<input type="submit" value="Search" class="form-control">
 				</div>
 			</div>
+            <div class="row" id="render-with-search-wrapper">
+              <div class="col-sm-9">
+                <ul id="render-with-search">
+
+                </ul>
+              </div>
+            </div>
 		</form>
     </div>
 
@@ -57,8 +70,9 @@
       {% for index in indexes %}
         {% for url in index.url_set.all %}
           <div class="url-wrapper">
-            <h4><a href="{{ url.url }}">{{ index.index }}</a></h4>
-            <p><small>{{ url.url }}</small></p>
+            <h4><a href="{{ url.url }}">{{ url.title }}</a></h4>
+            <p><small>url: {{ url.url }}</small></p>
+            <p><small>検索ワード: {{ index.index }}</small></p>
           </div>
         {% endfor %}
       {% endfor %}
@@ -75,19 +89,43 @@
   <script>
       $(function(){
         var endpoint = '/api/ajax/data/';
+        $('#id_query').on('keydown', function(){
+          query = $(this).val();
+          $('#render-with-search-wrapper').show();
+          $.ajax({
+            method: "GET",
+            url: endpoint + '?' + 'params1=' + query,
+            success: function(data){
+              counter = 0;
+              for(index in data){
+                $('#render-with-search').append('<li>' + index + '</li>');
+                counter ++;
+                if(counter == 5) break;
+              }
+            },
+            error: function(data){
+                console.log('Error');
+          }
+        })
+        })
+
+        /*
         $.ajax({
             method: "GET",
             url: endpoint,
             success: function(data){
-                $.each(data, function(i, d){
-                  $('#display').append('<p>' + d.sales + ' : ' + d.customers + '</p>')
-                });
+
+                // $.each(data, function(i, d){
+                //  $('#display').append('<p>' + d.sales + ' : ' + d.customers + '</p>')
+                //  if(i == 10) return false;
+                // });
             },
             error: function(data){
                 console.log('Error');
-                console.log(data);
+                // console.log(data);
             }
         })
+        */
       })
   </script>
 

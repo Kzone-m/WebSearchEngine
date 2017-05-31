@@ -12,8 +12,9 @@ class Index(models.Model):
 
 
 class Url(models.Model):
-    url = models.CharField('URL', max_length=100)
     index = models.ForeignKey(Index)
+    url = models.CharField('URL', max_length=100)
+    title = models.CharField('タイトル', max_length=100)
 
     def __str__(self):
         return self.url + ' for ' + self.index.index
