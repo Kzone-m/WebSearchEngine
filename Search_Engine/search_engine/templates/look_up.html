@@ -39,6 +39,12 @@
         #btn-wrapper a:hover{
             text-decoration: none
         }
+        #render-with-search-wrapper{
+            display: none;
+            border: 1px solid black;
+            background-color: white;
+            z-index: 10;
+        }
 	</style>
 </head>
 <body>
@@ -55,6 +61,13 @@
 					<input type="submit" value="Search" class="form-control">
 				</div>
 			</div>
+            <div class="row">
+              <div class="col-sm-8" id="render-with-search-wrapper">
+                <ul id="render-with-search">
+
+                </ul>
+              </div>
+            </div>
 		</form>
 		<div id="btn-wrapper">
 			<button class="btn btn-default" id=>
@@ -65,6 +78,44 @@
 			</button>
 		</div>
 	</div>
+
+	<script>
+      $(function(){
+        var endpoint = '/api/ajax/data/';
+        $('#id_query').on('keyup', function(){
+          query = $(this).val();
+          if(query.length == 0){
+            $('#render-with-search-wrapper').hide()
+          }else{
+            $('#render-with-search-wrapper').show();
+          }
+
+          $.ajax({
+            method: "GET",
+            url: endpoint + '?' + 'params1=' + query,
+            success: function(data){
+              $('#render-with-search').empty();
+              counter = 0;
+              for(var key in data){
+                target = Object.keys(data[key]);
+                $('#render-with-search').append('<li>' + target + '</li>');
+                counter ++;
+                if(counter == 10) break;
+              }
+            },
+            error: function(data){
+                console.log('Error');
+            }
+          });
+        });
+        /*
+          $.each(data, function(i, d){
+            $('#render-with-search').append('<li>' + d + '</li>');
+            if(i == 10) return false;
+          });
+        */
+      });
+	</script>
 
 </body>
 </html>

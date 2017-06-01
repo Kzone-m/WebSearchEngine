@@ -35,10 +35,9 @@
             display: none;
             border: 1px solid black;
             background-color: white;
-            z-index: 10;
         }
         .url-wrapper{
-            margin: 24px 16px;
+            margin: 24px 32px;
         }
 	</style>
 </head>
@@ -56,8 +55,8 @@
 					<input type="submit" value="Search" class="form-control">
 				</div>
 			</div>
-            <div class="row" id="render-with-search-wrapper">
-              <div class="col-sm-9">
+            <div class="row">
+              <div class="col-sm-8" id="render-with-search-wrapper">
                 <ul id="render-with-search">
 
                 </ul>
@@ -67,66 +66,53 @@
     </div>
 
     <div id="result-wrapper">
-      {% for index in indexes %}
-        {% for url in index.url_set.all %}
+      {% for url, title in items.items %}
           <div class="url-wrapper">
-            <h4><a href="{{ url.url }}">{{ url.title }}</a></h4>
-            <p><small>url: {{ url.url }}</small></p>
-            <p><small>検索ワード: {{ index.index }}</small></p>
+            <h4><a href="{{ url }}">{{ title }}</a></h4>
+            <p><small>url: {{ url }}</small></p>
           </div>
-        {% endfor %}
       {% endfor %}
     </div>
   </div>
 
-  <div id="indexes">
-
-  </div>
-
-  <div id="display"> </div>
-
+  <div id="indexes"> </div>
 
   <script>
       $(function(){
         var endpoint = '/api/ajax/data/';
-        $('#id_query').on('keydown', function(){
+        $('#id_query').on('keyup', function(){
           query = $(this).val();
-          $('#render-with-search-wrapper').show();
+          if(query.length == 0){
+            $('#render-with-search-wrapper').hide()
+          }else{
+            $('#render-with-search-wrapper').show();
+          }
+
           $.ajax({
             method: "GET",
             url: endpoint + '?' + 'params1=' + query,
             success: function(data){
+              $('#render-with-search').empty();
               counter = 0;
-              for(index in data){
-                $('#render-with-search').append('<li>' + index + '</li>');
+              for(var key in data){
+                target = Object.keys(data[key]);
+                $('#render-with-search').append('<li>' + target + '</li>');
                 counter ++;
-                if(counter == 5) break;
+                if(counter == 10) break;
               }
             },
             error: function(data){
                 console.log('Error');
-          }
-        })
-        })
-
-        /*
-        $.ajax({
-            method: "GET",
-            url: endpoint,
-            success: function(data){
-
-                // $.each(data, function(i, d){
-                //  $('#display').append('<p>' + d.sales + ' : ' + d.customers + '</p>')
-                //  if(i == 10) return false;
-                // });
-            },
-            error: function(data){
-                console.log('Error');
-                // console.log(data);
             }
-        })
+          });
+        });
+        /*
+          $.each(data, function(i, d){
+            $('#render-with-search').append('<li>' + d + '</li>');
+            if(i == 10) return false;
+          });
         */
-      })
+      });
   </script>
 
 </body>
